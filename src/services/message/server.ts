@@ -1,9 +1,15 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { INBOX_SESSION_ID } from '@/const/session';
 import { lambdaClient } from '@/libs/trpc/client';
-import { ChatMessage, ChatMessageError, ChatTTS, ChatTranslate } from '@/types/message';
+import {
+  ChatMessage,
+  ChatMessageError,
+  ChatTTS,
+  ChatTranslate,
+  CreateMessageParams,
+} from '@/types/message';
 
-import { CreateMessageParams, IMessageService } from './type';
+import { IMessageService } from './type';
 
 export class ServerService implements IMessageService {
   createMessage({ sessionId, ...params }: CreateMessageParams): Promise<string> {
@@ -44,6 +50,19 @@ export class ServerService implements IMessageService {
     return lambdaClient.message.update.mutate({ id, value: { error } });
   }
 
+  async updateMessagePluginError(id: string, error: ChatMessageError): Promise<any> {
+    return lambdaClient.message.update.mutate({ id, value: { pluginError: error } });
+  }
+
+  async updateMessagePluginArguments(
+    id: string,
+    value: string | Record<string, any>,
+  ): Promise<any> {
+    const args = typeof value === 'string' ? value : JSON.stringify(value);
+
+    return lambdaClient.message.updateMessagePlugin.mutate({ id, value: { arguments: args } });
+  }
+
   updateMessage(id: string, message: Partial<ChatMessage>): Promise<any> {
     return lambdaClient.message.update.mutate({ id, value: message });
   }
@@ -67,8 +86,13 @@ export class ServerService implements IMessageService {
   removeMessage(id: string): Promise<any> {
     return lambdaClient.message.removeMessage.mutate({ id });
   }
-  removeMessages(sessionId: string, topicId?: string | undefined): Promise<any> {
-    return lambdaClient.message.removeMessages.mutate({
+
+  removeMessages(ids: string[]): Promise<any> {
+    return lambdaClient.message.removeMessages.mutate({ ids });
+  }
+
+  removeMessagesByAssistant(sessionId: string, topicId?: string | undefined): Promise<any> {
+    return lambdaClient.message.removeMessagesByAssistant.mutate({
       sessionId: this.toDbSessionId(sessionId),
       topicId,
     });
