@@ -106,16 +106,10 @@ export function initializeWithClientStore(provider: string, payload: any) {
       };
       break;
     }
-    case ModelProvider.ZhiPu: {
-      break;
-    }
     case ModelProvider.Google: {
       providerOptions = {
         baseURL: providerAuthPayload?.endpoint,
       };
-      break;
-    }
-    case ModelProvider.Moonshot: {
       break;
     }
     case ModelProvider.Bedrock: {
@@ -142,18 +136,10 @@ export function initializeWithClientStore(provider: string, payload: any) {
       };
       break;
     }
-    case ModelProvider.Qwen: {
-      break;
-    }
-
     case ModelProvider.Anthropic: {
       providerOptions = {
         baseURL: providerAuthPayload?.endpoint,
       };
-      break;
-    }
-
-    case ModelProvider.Mistral: {
       break;
     }
     case ModelProvider.Groq: {
@@ -163,16 +149,11 @@ export function initializeWithClientStore(provider: string, payload: any) {
       };
       break;
     }
-    case ModelProvider.DeepSeek: {
-      break;
-    }
-    case ModelProvider.OpenRouter: {
-      break;
-    }
-    case ModelProvider.TogetherAI: {
-      break;
-    }
-    case ModelProvider.ZeroOne: {
+    case ModelProvider.Cloudflare: {
+      providerOptions = {
+        apikey: providerAuthPayload?.apiKey,
+        baseURLOrAccountID: providerAuthPayload?.cloudflareBaseURLOrAccountID,
+      };
       break;
     }
   }
